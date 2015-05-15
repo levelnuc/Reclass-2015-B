@@ -333,7 +333,7 @@ public:
 				if (gbPointers)
 				{
 					//printf( "<%p> here\n", Val );
-					if ( Val > 140000000 && Val < 80000000000 )
+					//if ( Val > 140000000 && Val < 80000000000 )
 						x = AddText(View,x,y,crOffset,NONE,"*->%s ",a);
 				}
 
@@ -393,6 +393,38 @@ public:
 			{
 				if (gbPointers)
 				{
+					//SERIOUSLY CHECK THESE POINTERS
+					DWORD pRTTIObjectLocator = Val - 0x4; //RTTI is at First VFunc - sizeof(void*), Val points to first VFunc if pointer is a vtable
+					DWORD RTTIObjectLocator;
+					ReadMemory(pRTTIObjectLocator, &RTTIObjectLocator, 4);
+
+					DWORD pClassHierarchyDescriptor = RTTIObjectLocator + 0x10;
+					DWORD ClassHierarchyDescriptor;
+					ReadMemory(pClassHierarchyDescriptor, &ClassHierarchyDescriptor, 4);
+
+					DWORD NumBaseClasses;
+					ReadMemory(ClassHierarchyDescriptor + 0x8, &NumBaseClasses, 4);
+
+					DWORD pBaseClassArray = ClassHierarchyDescriptor + 0x0C;
+					DWORD BaseClassArray;
+					ReadMemory(pBaseClassArray, &BaseClassArray, 4);
+
+					x = AddText(View, x, y, crOffset, NONE, " RTTI: ");
+					for (int i = 0; i < NumBaseClasses; i++)
+					{
+						DWORD pBaseClassDescriptor = BaseClassArray + (0x4 * i);
+						DWORD BaseClassDescriptor;
+						ReadMemory(pBaseClassDescriptor, &BaseClassDescriptor, 4);
+
+						DWORD TypeDescriptor; //pointer at 0x00 in BaseClassDescriptor
+						ReadMemory(BaseClassDescriptor, &TypeDescriptor, 4);
+
+						char* Name;
+						ReadMemory(TypeDescriptor + 0x08, Name, 8); //CHANGE THIS WILL BE MORE OR LESS THAN 8!!!!!!
+
+						x = AddText(View, x, y, crOffset, NONE, "%s", Name);
+					}
+
 					//printf( "<%p> here\n", Val ); // Shit is for 64 bit nigga we only using __int32
 					/*if (Val > 140000000 && Val < 80000000000)
 						x = AddText(View,x,y,crOffset,NONE,"*->%s ", a); */

@@ -199,6 +199,7 @@
       <StringPooling>true</StringPooling>
       <CreateHotpatchableImage>false</CreateHotpatchableImage>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

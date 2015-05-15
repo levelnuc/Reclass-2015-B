@@ -1236,10 +1236,8 @@ void CReClass2015App::OnFileOpen()
 					CNodeArray* pArray = (CNodeArray*)Links[i].pNode;
 					pArray->pNode = Classes[c];
 
-					if ( Links[i].ArraySize > 1 )
-						pArray->Total = Links[i].ArraySize / Classes[c]->GetMemorySize( );
-					else
-						pArray->Total = 1;
+					if (Links[i].ArraySize > 1)
+						pArray->Total = Links[i].ArraySize / Classes[c]->GetMemorySize();
 
 					//printf( "Array of %s\n", Classes[c]->Name );
 				}
